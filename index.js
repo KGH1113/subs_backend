@@ -254,12 +254,10 @@ app.post("/suggestion-request", async (req, res) => {
       answer: "",
     });
     await setDoc(docRef, newData);
-    res
-      .status(200)
-      .json({
-        status: "success",
-        message: "방송부 건의사항이 성공적으로 신청되었습니다!",
-      });
+    res.status(200).json({
+      status: "success",
+      message: "방송부 건의사항이 성공적으로 신청되었습니다!",
+    });
   }
 });
 
@@ -267,9 +265,9 @@ app.get("/view-suggestion", async (req, res) => {
   const suggestionRef = await getDocs(collection(db, "suggestion-request"));
   suggestionRef.forEach((doc) => {
     if (doc.id === "requests") {
-      res.status(200).json(doc.data().data)
+      res.status(200).json(doc.data().data);
     }
-  })
+  });
 });
 
 app.get("/", (req, res) => {
