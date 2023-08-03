@@ -263,8 +263,13 @@ app.post("/suggestion-request", async (req, res) => {
   }
 });
 
-app.get("/view-suggestion", (req, res) => {
-  res.status(200).json();
+app.get("/view-suggestion", async (req, res) => {
+  const suggestionRef = await getDocs(collection(db, "suggestion-request"));
+  suggestionRef.forEach((doc) => {
+    if (doc.id === "requests") {
+      res.status(200).json(doc.data().data)
+    }
+  })
 });
 
 app.get("/", (req, res) => {
