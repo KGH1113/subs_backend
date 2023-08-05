@@ -270,12 +270,21 @@ app.get("/view-suggestion", async (req, res) => {
   });
 });
 
+app.get("/view-schedule", async (req, res) => {
+  const scheduleRef = await getDocs(collection(db, "schedule"));
+  let data = {};
+  scheduleRef.forEach((doc) => {
+    data = doc.data();
+  });
+  res.status(200).json(data.data);
+});
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
 // Start the server
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("Server is running on port 3000");
 });
 
@@ -286,4 +295,5 @@ app.listen(3000, () => {
 //  app.get("/view-all-requests", () => {}) -> Complete
 //  app.post("/suggestion-request", () => {}) -> Complete
 //  app.post("/view-suggestion", () => {}) -> Complete
+// app.get("/view-schedule", () => {}) -> Complete
 //  app.post("/", () => {}) -> Complete

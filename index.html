@@ -1,155 +1,327 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Song Request Backend</title>
-    <script src="
-    https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js
-    "></script>
-    <link
-      href="
-    https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css
-    "
-      rel="stylesheet"
-    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SeounBSS backend</title>
     <style>
-      /* CSS for the Song Request Backend page */
+      /* Apply some basic styling to the body */
       body {
-        padding: 40px;
-        background-color: #333;
-        color: #fff;
         font-family: Arial, sans-serif;
-        line-height: 1.6;
+        margin: 0;
+        padding: 30px;
+      }
+
+      /* Style the article container */
+      .article {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Style the headings */
+      h1,
+      h2,
+      h3 {
+        color: #333;
       }
 
       h1 {
-        color: #ffa500;
+        font-size: 50px;
       }
 
-      h2 {
-        color: #ff4500;
+      /* Style paragraphs */
+      p {
+        line-height: 1.6;
       }
 
-      .method {
-        margin-top: 20px;
-      }
-
-      .method code {
-        background-color: #282c34;
-        padding: 2px 4px;
-        border-radius: 3px;
-        color: #fff;
-      }
-
-      .method pre {
-        background-color: #282c34;
+      /* Style code blocks */
+      pre {
+        background-color: #f4f4f4;
         padding: 10px;
-        border-radius: 5px;
+        border: 1px solid #ddd;
         overflow: auto;
-      }
-
-      .part-divider {
-        border-bottom: 1px solid #aaa;
-        margin: 30px 0;
-      }
-
-      /* PrismJS code highlighting */
-      pre code {
         font-size: 14px;
+        line-height: 1.6;
       }
 
-      /* Status Codes */
-      .method .route {
-        color: #000;
+      /* Style code lines */
+      pre code {
+        display: block;
+        white-space: pre;
       }
 
-      .method .language-javascript {
-        color: #00ff7f;
+      /* Style lists */
+      ul,
+      ol {
+        padding-left: 20px;
       }
 
-      .method .language-javascript.route {
-        color: #ffa500;
+      /* Style list items */
+      li {
+        line-height: 1.6;
+      }
+
+      /* Style links */
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      /* Style blockquotes */
+      blockquote {
+        border-left: 4px solid #ccc;
+        margin: 10px 0;
+        padding-left: 10px;
+        color: #777;
+      }
+
+      /* Style horizontal rules */
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 20px 0;
+      }
+
+      /* Responsive styling for smaller screens */
+      @media screen and (max-width: 600px) {
+        .article {
+          padding: 10px;
+        }
       }
     </style>
   </head>
-  <body style="padding: 40px; background-color: #333">
-    <h1>Welcome to the SeounBSS Backend</h1>
-    <h2>
-      This backend server allows you to make song requests, view the requested
-      songs, request the suggestions and view the suggestions.
-    </h2>
-
-    <div class="method">
-      To make a song request, send a POST request to the
-      <code class="language-http route">/song-request</code> endpoint with the
-      following JSON payload:
-    </div>
-    <pre>
-      <code class="language-javascript">
-{
-  "name": "Your Name",
-  "studentNumber": "Your Student Number",
-  "songTitle": "Song Title",
-  "singer": "Singer/Band Name"
-}
-      </code>
-    </pre>
-
-    <div class="method">
-      To view the requested songs, send a GET request to the
-      <code class="language-http route">/view-request</code>
-      endpoint.
-    </div>
-
-    <div class="method">
-      To view all of the requests from now on, send a GET request to
-      <code class="language-http route">/view-all-requests.</code>
-      The server will respond with a JSON array of all requested songs.
-    </div>
-
-    <div class="part-divider"></div>
-
-    <div class="method">
-      To make a suggestion request, send a POST request to the
-      <code class="language-http route">/suggestion-request</code>
-      endpoint the following JSON payload:
-    </div>
-    <pre>
-      <code class="language-javascript">
-{
-  "name": "Your Name",
-  "studentNumber": "Your Student Number",
-  "suggestion": "Suggestion content"
-}
-      </code>
-    </pre>
-
-    <div class="method">
-      To view the suggestion, send a GET request to the
-      <code class="language-http route">/view-suggestion</code>
-      endpoint.
-    </div>
-
-    <div class="part-divider"></div>
-
-    <h2>Status Codes:</h2>
-    When you send a request to a server, the server will send you a status codes
-    below:
-
-    <div class="method">
-      <code class="language-javascript route">200</code>
-      This code means the request and response was successfull with any blocks.
-      The server will send json:
-      <code class="language-javascript route"
-        >{ status: "success", message: MESSAGE }</code
-      >
-    </div>
-
-    <div class="method">
-      <code class="language-javascript route">400</code>
-      This code means the request and response was successfull but the request
-      was blocked. The server will send json:
-      <code class="language-javascript route"
-        >{ status: "error", message: MESSAGE }</code
-      >
-    </div>
+  <body>
+    <article class="markdown-body">
+      <h1>Song Request and Suggestion System API</h1>
+      <p>
+        This repository contains the source code for a simple Song Request and
+        Suggestion System API built using Node.js and Firebase. The API allows
+        users to request songs and make suggestions for a broadcasting
+        department.
+      </p>
+      <h2>Prerequisites</h2>
+      <p>
+        Before running the API, ensure you have the following installed on your
+        machine:
+      </p>
+      <ul>
+        <li>Node.js</li>
+        <li>npm (Node Package Manager)</li>
+      </ul>
+      <h2>Installation</h2>
+      <ol>
+        <li>Clone this repository to your local machine.</li>
+        <li>
+          Install the required dependencies by running the following command in
+          the project directory:
+        </li>
+      </ol>
+      <div>
+        <pre>npm install</pre>
+      </div>
+      <h2>Configuration</h2>
+      <p>
+        Make sure to replace the Firebase configuration with your own Firebase
+        project credentials in the <code>index.js</code> file:
+      </p>
+      <div>
+        <pre><span class="pl-c">// Replace with your Firebase project credentials</span>
+    <span class="pl-k">const</span> <span class="pl-s1">firebaseConfig</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+      <span class="pl-c1">apiKey</span>: <span class="pl-s">"YOUR_API_KEY"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">authDomain</span>: <span class="pl-s">"YOUR_AUTH_DOMAIN"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">projectId</span>: <span class="pl-s">"YOUR_PROJECT_ID"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">storageBucket</span>: <span class="pl-s">"YOUR_STORAGE_BUCKET"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">messagingSenderId</span>: <span class="pl-s">"YOUR_MESSAGING_SENDER_ID"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">appId</span>: <span class="pl-s">"YOUR_APP_ID"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">measurementId</span>: <span class="pl-s">"YOUR_MEASUREMENT_ID"</span><span class="pl-kos">,</span>
+    <span class="pl-kos">}</span><span class="pl-kos">;</span></pre>
+      </div>
+      <p>The server will be running on port 3000.</p>
+      <h2>Endpoints</h2>
+      <h3>1. Song Request</h3>
+      <ul>
+        <li>URL: <code>POST /song-request</code></li>
+        <li>Description: Allows users to request songs for broadcasting.</li>
+        <li>Request Body:</li>
+      </ul>
+      <div>
+        <pre>{
+      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Name<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Student Number<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer Name<span class="pl-pds">"</span></span>
+    }</pre>
+      </div>
+      <ul>
+        <li>
+          <p>Response:</p>
+          <ul>
+            <li>Status 200: Success</li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>success<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song request has been successfully submitted!<span class="pl-pds">"</span></span>
+    }</pre>
+          </div>
+          <ul>
+            <li>
+              Status 400: Error (e.g., invalid request, blacklisted user, etc.)
+            </li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Error message here<span class="pl-pds">"</span></span>
+    }</pre>
+          </div>
+        </li>
+      </ul>
+      <h3>2. View Song Requests for the Current Date</h3>
+      <ul>
+        <li>
+          <p>URL: <code>GET /view-request</code></p>
+        </li>
+        <li>
+          <p>
+            Description: Retrieves all the song requests for the current date.
+          </p>
+        </li>
+        <li>
+          <p>Response:</p>
+          <ul>
+            <li>Status 200: Success</li>
+          </ul>
+          <div>
+            <pre>[
+      {
+        <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 1<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>123456<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 1<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 1<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>10:30:15<span class="pl-pds">"</span></span>
+      },
+      {
+        <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 2<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>654321<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 2<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 2<span class="pl-pds">"</span></span>,
+        <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>11:45:22<span class="pl-pds">"</span></span>
+      }
+    ]</pre>
+          </div>
+          <ul>
+            <li>Status 400: Error (e.g., data not found)</li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>No song requests found for the current date.<span class="pl-pds">"</span></span>
+    }</pre>
+          </div>
+        </li>
+      </ul>
+      <h3>3. View All Song Requests</h3>
+      <ul>
+        <li>
+          <p>URL: <code>GET /view-all-requests</code></p>
+        </li>
+        <li>
+          <p>Description: Retrieves all the song requests for all dates.</p>
+        </li>
+        <li>
+          <p>Response:</p>
+          <ul>
+            <li>Status 200: Success</li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"2023-08-01"</span>: {
+        <span class="pl-ent">"data"</span>: [
+          {
+            <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 1<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>123456<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 1<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 1<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>10:30:15<span class="pl-pds">"</span></span>
+          }
+        ]
+      },
+      <span class="pl-ent">"2023-08-02"</span>: {
+        <span class="pl-ent">"data"</span>: [
+          {
+            <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 2<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>654321<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 2<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 2<span class="pl-pds">"</span></span>,
+            <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>11:45:22<span class="pl-pds">"</span></span>
+          }
+        ]
+      }
+    }</pre>
+          </div>
+          <ul>
+            <li>Status 400: Error (e.g., data not found)</li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>No song requests found.<span class="pl-pds">"</span></span>
+    }</pre>
+          </div>
+        </li>
+      </ul>
+      <h3>4. Suggest Request</h3>
+      <ul>
+        <li>URL: <code>POST /suggestion-request</code></li>
+        <li>
+          Description: Allows users to make suggestions for the broadcasting
+          department.
+        </li>
+        <li>Request Body:</li>
+      </ul>
+      <div>
+        <pre>{
+      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Name<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Student Number<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"suggestion"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your suggestion here<span class="pl-pds">"</span></span>
+    }</pre>
+      </div>
+      <ul>
+        <li>
+          <p>Response:</p>
+          <ul>
+            <li>Status 200: Success</li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>success<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Suggestion has been successfully submitted!<span class="pl-pds">"</span></span>
+    }</pre>
+          </div>
+          <ul>
+            <li>Status 400: Error (e.g., blacklisted user, etc.)</li>
+          </ul>
+          <div>
+            <pre>{
+      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
+      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Error message here<span class="pl-pds">"</span></span>
+    }</pre>
+          </div>
+        </li>
+      </ul>
+      <h2>Contributing</h2>
+      <p>
+        If you want to contribute to this project, feel free to fork the
+        repository and submit a pull request.
+      </p>
+      <h2>License</h2>
+      <p>
+        This project is licensed under the MIT License - see the
+        <a href="/KGH1113/seounbss_backend/blob/master/LICENSE">LICENSE</a> file
+        for details.
+      </p>
+    </article>
   </body>
 </html>
