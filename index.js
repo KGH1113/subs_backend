@@ -64,12 +64,12 @@ const isRequestValid = (
   console.log(blacklist);
 
   // Check if it's a weekend (Saturday or Sunday)
-  // if (
-  //   currentDateString.split("-")[0] === "Sat" ||
-  //   currentDateString.split("-")[0] === "Sun"
-  // ) {
-  //   return "주말에는 신청을 받지 않습니다.";
-  // }
+  if (
+    currentDateString.split("-")[0] === "Sat" ||
+    currentDateString.split("-")[0] === "Sun"
+  ) {
+    return "주말에는 신청을 받지 않습니다.";
+  }
 
   // Check if the maximum limit of 10 requests per day has been reached
   if (requestedSongs.data.length >= 10) {
@@ -77,16 +77,26 @@ const isRequestValid = (
   }
 
   // Check if the same singer is already requested
+  const singers = {
+    bts: ["bts", "b t s", "방탄소년단", "방탄"],
+    nct: ["nct", "n c t", "엔시티"],
+    bts_jungkook: ["BTS 정국", "bts jungkook", "jungkook", "정국"],
+  };
   if (
     requestedSongs.data.some(
       (song) => song.singer.toUpperCase() === singer.toUpperCase()
-    )
+    ) ||
+    singers.bts.some((Singer) => Singer.toUpperCase() === singer.toUpperCase())
   ) {
     return "동일한 가수의 신청곡이 존재합니다.";
   }
 
   // Check if the same song is already requested
-  if (requestedSongs.data.some((song) => song.songTitle === songTitle)) {
+  if (
+    requestedSongs.data.some(
+      (song) => song.songTitle.toUpperCase() === songTitle.toUpperCase()
+    )
+  ) {
     return "동일한 신청곡이 존재합니다.";
   }
 
@@ -205,7 +215,6 @@ app.get("/view-request", async (req, res) => {
 });
 
 app.get("/view-all-requests", async (req, res) => {
-  // Complete
   const data = {};
   const songRequestRef = await getDocs(collection(db, "song-request"));
   songRequestRef.forEach((doc) => {
