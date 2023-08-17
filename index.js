@@ -288,6 +288,23 @@ app.get("/view-schedule", async (req, res) => {
   res.status(200).json(data.data);
 });
 
+app.post("/add-schedule", async (req, res) => {
+  const { scheduleTitle, date, group, period } = req.body;
+  const scheduleRef = await getDocs(collection(db, "schedule"));
+  let data = {};
+  scheduleRef.forEach((doc) => {
+    data = doc.data();
+  });
+  const docRef = doc(db, "schedule", "data");
+  data.data.push({
+    title: scheduleTitle,
+    date: date,
+    group: group,
+    period: period,
+  });
+  await setDoc(docRef, data);
+});
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
