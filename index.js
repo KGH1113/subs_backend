@@ -289,7 +289,7 @@ app.get("/view-schedule", async (req, res) => {
 });
 
 app.post("/add-schedule", async (req, res) => {
-  const { title, date, group, period } = req.body;
+  const { title, date, group, period, link } = req.body;
   const scheduleRef = await getDocs(collection(db, "schedule"));
   let data = {};
   scheduleRef.forEach((doc) => {
@@ -301,6 +301,7 @@ app.post("/add-schedule", async (req, res) => {
     date: date,
     group: group,
     period: period,
+    link: link,
   });
   await setDoc(docRef, data);
 });
