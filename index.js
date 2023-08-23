@@ -78,15 +78,43 @@ const isRequestValid = (
 
   // Check if the same singer is already requested
   const singers = {
-    bts: ["bts", "b t s", "방탄소년단", "방탄"],
-    nct: ["nct", "n c t", "엔시티"],
+    bts_________: ["bts", "방탄소년단", "방탄"],
+    nct_________: ["nct", "엔시티"],
     bts_jungkook: ["BTS 정국", "bts jungkook", "jungkook", "정국"],
+    bts_v_______: [
+      "v",
+      "방탄소년단 v",
+      "방탄소년단 뷔",
+      "뷔",
+      "방탄 v",
+      "방탄 뷔",
+    ],
   };
+
+  const strProcess = (str) =>
+    str
+      .toUpperCase()
+      .replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "")
+      .trim()
+      .split(" ")
+      .join("");
+
   if (
     requestedSongs.data.some(
-      (song) => song.singer.toUpperCase() === singer.toUpperCase()
+      (song) => strProcess(song.singer) === strProcess(singer)
     ) ||
-    singers.bts.some((Singer) => Singer.toUpperCase() === singer.toUpperCase())
+    singers.bts_________.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) ||
+    singers.bts_jungkook.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) ||
+    singers.bts_v_______.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) ||
+    singers.nct_________.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    )
   ) {
     return "동일한 가수의 신청곡이 존재합니다.";
   }
