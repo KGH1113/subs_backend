@@ -91,6 +91,44 @@ const isRequestValid = (
     ],
   };
 
+  const isBTS = requestedSongs.data.some((song) =>
+    singers.bts_________.some(
+      (Singer) => strProcess(song.singer) === strProcess(Singer)
+    )
+  );
+  const isBTSjungKook = requestedSongs.data.some((song) =>
+    singers.bts_jungkook.some(
+      (Singer) => strProcess(song.singer) === strProcess(Singer)
+    )
+  );
+  const isBTSV = requestedSongs.data.some((song) =>
+    singers.bts_v_______.some(
+      (Singer) => strProcess(song.singer) === strProcess(Singer)
+    )
+  );
+  const isNct = requestedSongs.data.some((song) =>
+    singers.nct_________.some(
+      (Singer) => strProcess(song.singer) === strProcess(Singer)
+    )
+  );
+
+  let ISbts_________ =
+    singers.bts_________.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) && isBTS;
+  let ISbts_jungkook =
+    singers.bts_jungkook.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) && isBTSjungKook;
+  let ISbts_v_______ =
+    singers.bts_v_______.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) && isBTSV;
+  let ISnct_________ =
+    singers.nct_________.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
+    ) && isNct;
+
   const strProcess = (str) =>
     str
       .toUpperCase()
@@ -103,18 +141,10 @@ const isRequestValid = (
     requestedSongs.data.some(
       (song) => strProcess(song.singer) === strProcess(singer)
     ) ||
-    singers.bts_________.some(
-      (Singer) => strProcess(Singer) === strProcess(singer)
-    ) ||
-    singers.bts_jungkook.some(
-      (Singer) => strProcess(Singer) === strProcess(singer)
-    ) ||
-    singers.bts_v_______.some(
-      (Singer) => strProcess(Singer) === strProcess(singer)
-    ) ||
-    singers.nct_________.some(
-      (Singer) => strProcess(Singer) === strProcess(singer)
-    )
+    ISbts_________ ||
+    ISbts_jungkook ||
+    ISbts_v_______ ||
+    ISnct_________
   ) {
     return "동일한 가수의 신청곡이 존재합니다.";
   }
