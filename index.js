@@ -98,6 +98,14 @@ const isRequestValid = (
     return "오늘 신청이 마감되었습니다. (10개)";
   }
 
+  const strProcess = (str) =>
+    str
+      .toUpperCase()
+      .replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "")
+      .trim()
+      .split(" ")
+      .join("");
+
   // Check if the same singer is already requested
   const singers = {
     bts_________: ["bts", "방탄소년단", "방탄"],
@@ -150,14 +158,6 @@ const isRequestValid = (
     singers.nct_________.some(
       (Singer) => strProcess(Singer) === strProcess(singer)
     ) && isNct;
-
-  const strProcess = (str) =>
-    str
-      .toUpperCase()
-      .replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "")
-      .trim()
-      .split(" ")
-      .join("");
 
   if (
     requestedSongs.data.some(
