@@ -1,4 +1,5 @@
 // Import the modules
+const cron = require("node-cron");
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -38,6 +39,27 @@ app.use((req, res, next) => {
 // Middleware to parse JSON data
 app.use(bodyParser.json());
 
+// Initializing the firebase doc every day at 12:00 AM
+cron.schedule("0 0 * * *", async () => {
+  const currentDateString = new Date()
+    .toLocaleString("en-US", {
+      timeZone: "Asia/Seoul",
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+    .split(", ")
+    .join("-")
+    .split(",")
+    .join("");
+
+  console.log("12:00 ---> Initializing");
+  const newData = { data: [] };
+  const docRef = doc(db, "song-request", currentDateString);
+  await setDoc(docRef, newData);
+});
+
 // Function to check if a song request is valid
 const isRequestValid = (
   name,
@@ -52,7 +74,7 @@ const isRequestValid = (
       timeZone: "Asia/Seoul",
       weekday: "short",
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     })
     .split(", ")
@@ -262,11 +284,14 @@ app.get("/view-request", async (req, res) => {
     .join("-")
     .split(" ")
     .join("");
+  console.log(currentDateString);
 
   // Retrieve the requested songs for the current date
   const songRequestRef = await getDocs(collection(db, "song-request"));
   songRequestRef.forEach((doc) => {
+    console.log(doc.id);
     if (doc.id == currentDateString) {
+      console.log(doc.data());
       res.json(doc.data().data);
     }
   });
