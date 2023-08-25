@@ -82,9 +82,6 @@ const isRequestValid = (
     .split(",")
     .join("");
 
-  console.log(requestedSongs.data);
-  console.log(blacklist);
-
   // Check if it's a weekend (Saturday or Sunday)
   if (
     currentDateString.split("-")[0] === "Sat" ||
@@ -225,7 +222,6 @@ app.post("/song-request", async (req, res) => {
       newData["data"] = doc.data().data;
     }
   });
-  console.log(newData);
 
   let blacklist = [];
   const blacklistRef = await getDocs(collection(db, "song-request"));
@@ -261,8 +257,10 @@ app.post("/song-request", async (req, res) => {
     });
 
     const docRef = doc(db, "song-request", currentDateString);
-    console.log(newData);
     await setDoc(docRef, newData);
+
+    console.log(`pushed to ${currentDateString}, data: `);
+    console.log(req.body);
 
     res.status(200).json({
       status: "success",
@@ -284,13 +282,12 @@ app.get("/view-request", async (req, res) => {
     .join("-")
     .split(" ")
     .join("");
-  console.log(currentDateString);
 
   // Retrieve the requested songs for the current date
   const songRequestRef = await getDocs(collection(db, "song-request"));
   songRequestRef.forEach((doc) => {
-    console.log(doc.id);
     if (doc.id == currentDateString) {
+      console.log("Viewed data on /view-request: ");
       console.log(doc.data());
       res.json(doc.data().data);
     }
@@ -301,6 +298,8 @@ app.get("/view-all-requests", async (req, res) => {
   const data = {};
   const songRequestRef = await getDocs(collection(db, "song-request"));
   songRequestRef.forEach((doc) => {
+    console.log("Viewed data on /view-all-requests: ");
+    console.log(doc.data());
     data[doc.id] = doc.data();
   });
   res.status(200).json(data);
@@ -320,7 +319,6 @@ app.post("/suggestion-request", async (req, res) => {
       newData["data"] = doc.data().data;
     }
   });
-  console.log(newData);
 
   suggestionRequestRef.forEach((doc) => {
     if (doc.id == "blacklist") {
@@ -394,8 +392,9 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 // Develop log...
