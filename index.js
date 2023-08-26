@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Initializing the firebase doc every day at 12:00 AM
-cron.schedule("58 11 * * *", async () => {
+cron.schedule("58 23 * * *", async () => {
   const currentDate = new Date()
   const tommorowDateString = new Date(currentDate.setDate(currentDate.getDate() + 1))
     .toLocaleString("en-US", {
