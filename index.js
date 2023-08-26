@@ -40,8 +40,9 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Initializing the firebase doc every day at 12:00 AM
-cron.schedule("0 0 * * *", async () => {
-  const currentDateString = new Date()
+cron.schedule("58 11 * * *", async () => {
+  const currentDate = new Date()
+  const tommorowDateString = new Date(currentDate.setDate(currentDate.getDate() + 1))
     .toLocaleString("en-US", {
       timeZone: "Asia/Seoul",
       weekday: "short",
@@ -51,12 +52,12 @@ cron.schedule("0 0 * * *", async () => {
     })
     .split(", ")
     .join("-")
-    .split(",")
+    .split(" ")
     .join("");
 
-  console.log("12:00 ---> Initializing");
+  console.log("11:58 ---> Initializing for the next day");
   const newData = { data: [] };
-  const docRef = doc(db, "song-request", currentDateString);
+  const docRef = doc(db, "song-request", tommorowDateString);
   await setDoc(docRef, newData);
 });
 
@@ -79,7 +80,7 @@ const isRequestValid = (
     })
     .split(", ")
     .join("-")
-    .split(",")
+    .split(" ")
     .join("");
 
   // Check if it's a weekend (Saturday or Sunday)
