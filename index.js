@@ -41,8 +41,10 @@ app.use(bodyParser.json());
 
 // Initializing the firebase doc every day at 12:00 AM
 cron.schedule("58 23 * * *", async () => {
-  const currentDate = new Date()
-  const tommorowDateString = new Date(currentDate.setDate(currentDate.getDate() + 1))
+  const currentDate = new Date();
+  const tommorowDateString = new Date(
+    currentDate.setDate(currentDate.getDate() + 1)
+  )
     .toLocaleString("en-US", {
       timeZone: "Asia/Seoul",
       weekday: "short",
@@ -386,6 +388,68 @@ app.post("/add-schedule", async (req, res) => {
     link: link,
   });
   await setDoc(docRef, data);
+});
+
+app.post("/add-story", async (req, res) => {
+  const { name, studentNumber, story } = req.body;
+
+  let isValid = false;
+  const isValidRef = await getDocs(collection(db, "story-request"));
+  isValidRef.forEach((doc) => {
+    if (doc.id === "isValid") {
+      if (doc.data().data.valid === false) {
+        isValid = false;
+        console.log({ status: "error", message: doc.data().data.message });
+        res
+          .status(400)
+          .json({ status: "error", message: doc.data().data.message });
+      }
+    }
+  });
+
+  if (isValid) {
+    const currentDateString = new Date()
+      .toLocaleString("en-US", {
+        timeZone: "Asia/Seoul",
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+      .split(", ")
+      .join("-")
+      .split(" ")
+      .join("");
+
+    const storyRef = await getDocs(collection(db, "story-request"));
+    let data = {};
+    storyRef.forEach((doc) => {
+      if (doc.id === currentDateString) {
+        data = doc.data();
+        console.log(data);
+      }
+    });
+
+    const docRef = doc(db, "story-request", currentDateString);
+    data.data.push({
+      name: name,
+      studentNumber: studentNumber,
+      story: story,
+    });
+
+    await setDoc(docRef, data);
+  }
+});
+
+app.get("/view-story", async (req, res) => {
+  const storyRef = await getDocs(collection(db, "story-request"));
+  let data = {};
+  storyRef.forEach((doc) => {
+    data = doc.data();
+    console.log("viewed story: ");
+    console.log(data);
+    res.status(200).json(data);
+  });
 });
 
 app.get("/", (req, res) => {
