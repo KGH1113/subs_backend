@@ -391,7 +391,7 @@ app.post("/add-schedule", async (req, res) => {
 });
 
 app.post("/add-story", async (req, res) => {
-  const { name, studentNumber, story } = req.body;
+  const { name, studentNumber, story, song, singer } = req.body;
 
   let isValid = false;
   const isValidRef = await getDocs(collection(db, "story-request"));
@@ -435,6 +435,8 @@ app.post("/add-story", async (req, res) => {
       name: name,
       studentNumber: studentNumber,
       story: story,
+      song: song,
+      singer: singer,
     });
 
     await setDoc(docRef, data);
