@@ -393,6 +393,8 @@ app.post("/add-schedule", async (req, res) => {
 app.post("/add-story", async (req, res) => {
   const { name, studentNumber, story, songTitle, singer } = req.body;
 
+  console.log("asdf");
+
   let isValid = false;
   const isValidRef = await getDocs(collection(db, "story-request"));
   isValidRef.forEach((doc) => {
@@ -403,6 +405,8 @@ app.post("/add-story", async (req, res) => {
         res
           .status(400)
           .json({ status: "error", message: doc.data().data.message });
+      } else {
+        isValid = true;
       }
     }
   });
@@ -422,7 +426,7 @@ app.post("/add-story", async (req, res) => {
       .join("");
 
     const storyRef = await getDocs(collection(db, "story-request"));
-    let data = {};
+    let data = { data: [] };
     storyRef.forEach((doc) => {
       if (doc.id === currentDateString) {
         data = doc.data();
@@ -438,8 +442,11 @@ app.post("/add-story", async (req, res) => {
       songTitle: songTitle,
       singer: singer,
     });
-
+    console.log(data);
     await setDoc(docRef, data);
+    res
+      .status(200)
+      .json({ status: "success", message: "사연이 신청되었습니다" });
   }
 });
 
@@ -459,7 +466,7 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-const port = 3000;
+const port = 2000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
