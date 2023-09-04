@@ -175,10 +175,8 @@ const isRequestValid = (
       (Singer) => strProcess(Singer) === strProcess(singer)
     ) && isNCTU;
   let ISsvt_________ =
-    singers.seventeen___.some((singer) =>
-      singers.seventeen___.some(
-        (Singer) => strProcess(Singer) === strProcess(singer)
-      )
+    singers.seventeen___.some(
+      (Singer) => strProcess(Singer) === strProcess(singer)
     ) && isSVT;
 
   if (
