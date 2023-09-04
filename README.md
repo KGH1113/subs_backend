@@ -196,9 +196,41 @@ The server will be running on port 3000.
   }
   ```
 
-## Contributing
+### 4. Suggest Request
 
-If you want to contribute to this project, feel free to fork the repository and submit a pull request.
+- URL: `POST /add-story`
+- Description: Allows users to make story for the broadcasting department.
+- Request Body:
+
+```json
+{
+  "name": "Your Name",
+  "studentNumber": "Your Student Number",
+  "story": "Your Story Here",
+  "songTitle": "Song for a story",
+  "singer": "Singer Name"
+}
+```
+
+- Response:
+
+  - Status 200: Success
+
+  ```json
+  {
+    "status": "success",
+    "message": "Story has been successfully submitted!"
+  }
+  ```
+
+  - Status 400: Error (e.g., blacklisted user, etc.)
+
+  ```json
+  {
+    "status": "error",
+    "message": "Error message here"
+  }
+  ```
 
 ## License
 
