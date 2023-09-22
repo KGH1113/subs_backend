@@ -14,13 +14,13 @@ const {
 } = require("firebase/firestore");
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA_iJrZIbWwPzAtWeP3HidzgQJwPRmZ_mY",
-  authDomain: "seounbss.firebaseapp.com",
-  projectId: "seounbss",
-  storageBucket: "seounbss.appspot.com",
-  messagingSenderId: "673321926585",
-  appId: "1:673321926585:web:16402e692ddbc6e3c6c068",
-  measurementId: "G-24YHBKSGYZ",
+  apiKey: "AIzaSyAdX-HgPQojgkO0BLZPrRKqYvDOcnEBnyA",
+  authDomain: "subs-b2014.firebaseapp.com",
+  projectId: "subs-b2014",
+  storageBucket: "subs-b2014.appspot.com",
+  messagingSenderId: "550514416689",
+  appId: "1:550514416689:web:d09e269d97595eb03a0910",
+  measurementId: "G-QGWBVD35C9"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
