@@ -70,7 +70,8 @@ const isRequestValid = (
   songTitle,
   singer,
   requestedSongs,
-  blacklist
+  blacklist,
+  isValidObj,
 ) => {
   const currentDateString = new Date()
     .toLocaleString("en-US", {
@@ -84,6 +85,10 @@ const isRequestValid = (
     .join("-")
     .split(" ")
     .join("");
+  
+  if (isValidObj.isValid === false) {
+    return isValidObj.message;
+  }
 
   // Check if it's a weekend (Saturday or Sunday)
   if (
@@ -241,18 +246,16 @@ app.post("/song-request", async (req, res) => {
     .join("");
 
   let newData = { data: [] };
-  const songRequestRef = await getDocs(collection(db, "song-request"));
-  songRequestRef.forEach((doc) => {
-    if (doc.id == currentDateString) {
-      newData["data"] = doc.data().data;
-    }
-  });
-
   let blacklist = [];
+  let isValidObj = {};
   const blacklistRef = await getDocs(collection(db, "song-request"));
   blacklistRef.forEach((doc) => {
     if (doc.id == "blacklist") {
       blacklist = doc.data().data;
+    } else if (doc.id === "isValid") {
+      isValidObj = doc.data()
+    } else if (doc.id == currentDateString) {
+      newData["data"] = doc.data().data;
     }
   });
 
@@ -262,7 +265,8 @@ app.post("/song-request", async (req, res) => {
     songTitle,
     singer,
     newData,
-    blacklist
+    blacklist,
+    isValidObj
   );
 
   if (requestValidity) {
