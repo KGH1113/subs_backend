@@ -2,7 +2,6 @@
 const cron = require("node-cron");
 const express = require("express");
 const bodyParser = require("body-parser");
-
 const { initializeApp } = require("firebase/app");
 const {
   getFirestore,
@@ -20,11 +19,13 @@ const firebaseConfig = {
   storageBucket: "subs-b2014.appspot.com",
   messagingSenderId: "550514416689",
   appId: "1:550514416689:web:d09e269d97595eb03a0910",
-  measurementId: "G-QGWBVD35C9"
+  measurementId: "G-QGWBVD35C9",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+
+let todaySongRequest = { data: [] };
 
 const app = express();
 
@@ -57,10 +58,15 @@ cron.schedule("58 23 * * *", async () => {
     .split(" ")
     .join("");
 
-  console.log("11:58 ---> Initializing for the next day");
+  console.log("11:58 ---> Initializing firestoreDB for the next day");
   const newData = { data: [] };
   const docRef = doc(db, "song-request", tommorowDateString);
   await setDoc(docRef, newData);
+});
+
+cron.schedule("0 0 * * *", async () => {
+  console.log("12:00 ---> Initializing today's request");
+  todaySongRequest = { data: [] };
 });
 
 // Function to check if a song request is valid
@@ -71,7 +77,7 @@ const isRequestValid = (
   singer,
   requestedSongs,
   blacklist,
-  isValidObj,
+  isValidObj
 ) => {
   const currentDateString = new Date()
     .toLocaleString("en-US", {
@@ -85,18 +91,18 @@ const isRequestValid = (
     .join("-")
     .split(" ")
     .join("");
-  
+
   if (isValidObj.isValid === false) {
     return isValidObj.message;
   }
 
   // Check if it's a weekend (Saturday or Sunday)
-  if (
-    currentDateString.split("-")[0] === "Sat" ||
-    currentDateString.split("-")[0] === "Sun"
-  ) {
-    return "주말에는 신청을 받지 않습니다.";
-  }
+  // if (
+  //   currentDateString.split("-")[0] === "Sat" ||
+  //   currentDateString.split("-")[0] === "Sun"
+  // ) {
+  //   return "주말에는 신청을 받지 않습니다.";
+  // }
 
   // Check if the maximum limit of 10 requests per day has been reached
   if (requestedSongs.data.length >= 10) {
@@ -253,7 +259,7 @@ app.post("/song-request", async (req, res) => {
     if (doc.id == "blacklist") {
       blacklist = doc.data().data;
     } else if (doc.id === "isValid") {
-      isValidObj = doc.data()
+      isValidObj = doc.data();
     } else if (doc.id == currentDateString) {
       newData["data"] = doc.data().data;
     }
@@ -288,6 +294,8 @@ app.post("/song-request", async (req, res) => {
     const docRef = doc(db, "song-request", currentDateString);
     await setDoc(docRef, newData);
 
+    todaySongRequest = newData;
+
     console.log(`pushed to ${currentDateString}, data: `);
     console.log(req.body);
 
@@ -299,28 +307,7 @@ app.post("/song-request", async (req, res) => {
 });
 
 app.get("/view-request", async (req, res) => {
-  const currentDateString = new Date()
-    .toLocaleString("en-US", {
-      timeZone: "Asia/Seoul",
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
-    .split(", ")
-    .join("-")
-    .split(" ")
-    .join("");
-
-  // Retrieve the requested songs for the current date
-  const songRequestRef = await getDocs(collection(db, "song-request"));
-  songRequestRef.forEach((doc) => {
-    if (doc.id == currentDateString) {
-      console.log("Viewed data on /view-request: ");
-      console.log(doc.data());
-      res.json(doc.data().data);
-    }
-  });
+  res.status(200).json(todaySongRequest);
 });
 
 app.get("/view-all-requests", async (req, res) => {
