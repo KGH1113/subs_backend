@@ -307,7 +307,7 @@ app.post("/song-request", async (req, res) => {
 });
 
 app.get("/view-request", async (req, res) => {
-  res.status(200).json(todaySongRequest);
+  res.status(200).json(todaySongRequest.data);
 });
 
 app.get("/view-all-requests", async (req, res) => {
