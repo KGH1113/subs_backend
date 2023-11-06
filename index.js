@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Initializing the firebase doc every day at 12:00 AM
-cron.schedule("58 23 * * *", async () => {
+cron.schedule("58 0 * * *", async () => {
   const currentDate = new Date();
   const tommorowDateString = new Date(
     currentDate.setDate(currentDate.getDate() + 1)
@@ -58,14 +58,17 @@ cron.schedule("58 23 * * *", async () => {
     .split(" ")
     .join("");
 
-  console.log("11:58 ---> Initializing firestoreDB for the next day");
+  console.log(
+    "11:58 ---> Initializing firestoreDB for the next day ( initailized date: " +
+      tommorowDateString +
+      " )"
+  );
   const newData = { data: [] };
   const docRef = doc(db, "song-request", tommorowDateString);
   await setDoc(docRef, newData);
-});
-
-cron.schedule("0 0 * * *", async () => {
-  console.log("12:00 ---> Initializing today's request");
+  console.log(
+    "11:58 ---> Initializing today's request => " + new Date().toLocaleString()
+  );
   todaySongRequest = { data: [] };
 });
 
