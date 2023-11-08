@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Initializing the firebase doc every day at 12:00 AM
-cron.schedule("58 0 * * *", async () => {
+const midnightTask = async () => {
   const currentDate = new Date();
   const tommorowDateString = new Date(
     currentDate.setDate(currentDate.getDate() + 1)
@@ -70,7 +70,30 @@ cron.schedule("58 0 * * *", async () => {
     "11:58 ---> Initializing today's request => " + new Date().toLocaleString()
   );
   todaySongRequest = { data: [] };
-});
+}
+
+const scheduleTaskAt2358 = () => {
+  const now = new Date();
+  const next2358 = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(), // Same day
+    23, // 11 PM
+    58, // 58 minutes
+    0, // 0 seconds
+    0 // 0 milliseconds
+  );
+  const timeUntil2358 = next2358 - now;
+
+  setTimeout(() => {
+    midnightTask();
+    // Schedule the task for the next day at 23:58
+    scheduleTaskAt2358();
+  }, timeUntil2358);
+}
+
+// Start the scheduling
+scheduleTaskAt2358();
 
 // Function to check if a song request is valid
 const isRequestValid = (
