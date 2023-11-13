@@ -13,13 +13,13 @@ const {
 } = require("firebase/firestore");
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAdX-HgPQojgkO0BLZPrRKqYvDOcnEBnyA",
-  authDomain: "subs-b2014.firebaseapp.com",
-  projectId: "subs-b2014",
-  storageBucket: "subs-b2014.appspot.com",
-  messagingSenderId: "550514416689",
-  appId: "1:550514416689:web:d09e269d97595eb03a0910",
-  measurementId: "G-QGWBVD35C9",
+  apiKey: "AIzaSyB2ivn9RLCo_2CvErmyzQNTIdL2cxH9zPM",
+  authDomain: "subs-7a132.firebaseapp.com",
+  projectId: "subs-7a132",
+  storageBucket: "subs-7a132.appspot.com",
+  messagingSenderId: "618126276524",
+  appId: "1:618126276524:web:da22c1abcdc78ed9d72c09",
+  measurementId: "G-9W1YHRTQL6"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -41,59 +41,12 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 // Initializing the firebase doc every day at 12:00 AM
-const midnightTask = async () => {
-  const currentDate = new Date();
-  const tommorowDateString = new Date(
-    currentDate.setDate(currentDate.getDate() + 1)
-  )
-    .toLocaleString("en-US", {
-      timeZone: "Asia/Seoul",
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
-    .split(", ")
-    .join("-")
-    .split(" ")
-    .join("");
-
-  console.log(
-    "11:58 ---> Initializing firestoreDB for the next day ( initailized date: " +
-      tommorowDateString +
-      " )"
-  );
-  const newData = { data: [] };
-  const docRef = doc(db, "song-request", tommorowDateString);
-  await setDoc(docRef, newData);
+cron.schedule("58 23 * * *", async () => {
   console.log(
     "11:58 ---> Initializing today's request => " + new Date().toLocaleString()
   );
   todaySongRequest = { data: [] };
-}
-
-const scheduleTaskAt2358 = () => {
-  const now = new Date();
-  const next2358 = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(), // Same day
-    23, // 11 PM
-    58, // 58 minutes
-    0, // 0 seconds
-    0 // 0 milliseconds
-  );
-  const timeUntil2358 = next2358 - now;
-
-  setTimeout(() => {
-    midnightTask();
-    // Schedule the task for the next day at 23:58
-    scheduleTaskAt2358();
-  }, timeUntil2358);
-}
-
-// Start the scheduling
-scheduleTaskAt2358();
+});
 
 // Function to check if a song request is valid
 const isRequestValid = (
