@@ -1,7 +1,7 @@
 {
-  "name": "seounbss_backend",
+  "name": "subs_backend",
   "version": "1.0.0",
-  "description": "An API server for SeounBSS",
+  "description": "An API server for SUBS",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +12,6 @@
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "firebase": "^10.1.0",
-    "node-cron": "^3.0.2",
-    "sqlite3": "^5.1.6"
+    "ws": "^8.14.2"
   }
 }
