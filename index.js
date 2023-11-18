@@ -1,13 +1,13 @@
 // Import the modules
-const cron = require("node-cron");
 const express = require("express");
+const http = require("http");
+const WebSocket = require("ws");
 const bodyParser = require("body-parser");
 const { initializeApp } = require("firebase/app");
 const {
   getFirestore,
   collection,
   getDocs,
-  updateDoc,
   doc,
   setDoc,
 } = require("firebase/firestore");
@@ -19,45 +19,15 @@ const firebaseConfig = {
   storageBucket: "subs-7a132.appspot.com",
   messagingSenderId: "618126276524",
   appId: "1:618126276524:web:da22c1abcdc78ed9d72c09",
-  measurementId: "G-9W1YHRTQL6"
+  measurementId: "G-9W1YHRTQL6",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
-let todaySongRequest = { data: [] };
+const getSongFirestore = async () => {
+  const todaySongRequest = { data: [] };
 
-const app = express();
-
-// Enable CORS for all routes
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
-
-// Middleware to parse JSON data
-app.use(bodyParser.json());
-
-// Initializing the firebase doc every day at 12:00 AM
-cron.schedule("58 23 * * *", async () => {
-  console.log(
-    "11:58 ---> Initializing today's request => " + new Date().toLocaleString()
-  );
-  todaySongRequest = { data: [] };
-});
-
-// Function to check if a song request is valid
-const isRequestValid = (
-  name,
-  studentNumber,
-  songTitle,
-  singer,
-  requestedSongs,
-  blacklist,
-  isValidObj
-) => {
   const currentDateString = new Date()
     .toLocaleString("en-US", {
       timeZone: "Asia/Seoul",
@@ -71,6 +41,44 @@ const isRequestValid = (
     .split(" ")
     .join("");
 
+  const songRequestRef = await getDocs(collection(db, "song-request"));
+  songRequestRef.forEach((doc) => {
+    if (doc.id == currentDateString) {
+      todaySongRequest["data"] = doc.data().data;
+    }
+  });
+
+  return todaySongRequest;
+};
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server, path: "/view-requests" });
+
+// Store connected WebSocket clients
+const clients = new Set();
+
+// Enable CORS for all routes
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
+// Middleware to parse JSON data
+app.use(bodyParser.json());
+
+// Function to check if a song request is valid
+const isRequestValid = (
+  name,
+  studentNumber,
+  songTitle,
+  singer,
+  requestedSongs,
+  blacklist,
+  isValidObj
+) => {
   if (isValidObj.isValid === false) {
     return isValidObj.message;
   }
@@ -233,8 +241,8 @@ app.post("/song-request", async (req, res) => {
   let newData = { data: [] };
   let blacklist = [];
   let isValidObj = {};
-  const blacklistRef = await getDocs(collection(db, "song-request"));
-  blacklistRef.forEach((doc) => {
+  const songRequestRef = await getDocs(collection(db, "song-request"));
+  songRequestRef.forEach((doc) => {
     if (doc.id == "blacklist") {
       blacklist = doc.data().data;
     } else if (doc.id === "isValid") {
@@ -273,10 +281,17 @@ app.post("/song-request", async (req, res) => {
     const docRef = doc(db, "song-request", currentDateString);
     await setDoc(docRef, newData);
 
-    todaySongRequest = newData;
+    const todaySongRequest = newData;
 
     console.log(`pushed to ${currentDateString}, data: `);
     console.log(req.body);
+
+    // Broadcast the data to all connected WebSocket clients
+    clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(todaySongRequest));
+      }
+    });
 
     res.status(200).json({
       status: "success",
@@ -285,19 +300,28 @@ app.post("/song-request", async (req, res) => {
   }
 });
 
-app.get("/view-request", async (req, res) => {
-  res.status(200).json(todaySongRequest.data);
-});
+wss.on("connection", async (ws) => {
+  clients.add(ws);
+  console.log("New client connected to a websocket.");
 
-app.get("/view-all-requests", async (req, res) => {
-  const data = {};
-  const songRequestRef = await getDocs(collection(db, "song-request"));
-  songRequestRef.forEach((doc) => {
-    console.log("Viewed data on /view-all-requests: ");
-    console.log(doc.data());
-    data[doc.id] = doc.data();
+  const todaySongRequest = await getSongFirestore();
+  
+  // Broadcast the data to all connected WebSocket clients
+  clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(todaySongRequest));
+    }
   });
-  res.status(200).json(data);
+
+  // Handle incoming messages from WebSocket clients
+  ws.on("message", (message) => {
+    console.log(`Message Received from client: ${message}`);
+  });
+
+  // Handle WebSocket disconnections
+  ws.on("close", () => {
+    clients.delete(ws);
+  });
 });
 
 app.post("/suggestion-request", async (req, res) => {
@@ -385,8 +409,6 @@ app.post("/add-schedule", async (req, res) => {
 app.post("/add-story", async (req, res) => {
   const { name, studentNumber, story, songTitle, singer } = req.body;
 
-  console.log("asdf");
-
   let isValid = false;
   const isValidRef = await getDocs(collection(db, "story-request"));
   isValidRef.forEach((doc) => {
@@ -458,18 +480,12 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// const port = 3000;
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 
-// Develop log...
-//  isRequestValid() -> Complete
-//  app.post("/song-request", () => {}) -> Complete
-//  app.get("/view-request", () => {}) -> Complete
-//  app.get("/view-all-requests", () => {}) -> Complete
-//  app.post("/suggestion-request", () => {}) -> Complete
-//  app.post("/view-suggestion", () => {}) -> Complete
-//  app.get("/view-schedule", () => {}) -> Complete
-//  app.post("/add-schedule", () => {}) -> Complete
-//  app.post("/", () => {}) -> Complete
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
