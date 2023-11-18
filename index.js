@@ -83,6 +83,19 @@ const isRequestValid = (
     return isValidObj.message;
   }
 
+  const currentDateString = new Date()
+    .toLocaleString("en-US", {
+      timeZone: "Asia/Seoul",
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+    .split(", ")
+    .join("-")
+    .split(" ")
+    .join("");
+
   // Check if it's a weekend (Saturday or Sunday)
   if (
     currentDateString.split("-")[0] === "Sat" ||
