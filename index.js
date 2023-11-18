@@ -84,12 +84,12 @@ const isRequestValid = (
   }
 
   // Check if it's a weekend (Saturday or Sunday)
-  // if (
-  //   currentDateString.split("-")[0] === "Sat" ||
-  //   currentDateString.split("-")[0] === "Sun"
-  // ) {
-  //   return "주말에는 신청을 받지 않습니다.";
-  // }
+  if (
+    currentDateString.split("-")[0] === "Sat" ||
+    currentDateString.split("-")[0] === "Sun"
+  ) {
+    return "주말에는 신청을 받지 않습니다.";
+  }
 
   // Check if the maximum limit of 10 requests per day has been reached
   if (requestedSongs.data.length >= 10) {
