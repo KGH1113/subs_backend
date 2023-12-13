@@ -1,39 +1,52 @@
-# Song Request and Suggestion System API
+# Project Name
 
-This repository contains the source code for a simple Song Request and Suggestion System API built using Node.js and Firebase. The API allows users to request songs and make suggestions for a broadcasting department.
+Subtitle or brief description of the project.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Endpoints](#endpoints)
+- [WebSocket](#websocket)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Overview
+
+This project is a Node.js application using Express, WebSocket, and Firebase to manage song requests, suggestions, schedules, and stories.
 
 ## Prerequisites
 
-Before running the API, ensure you have the following installed on your machine:
+Before you begin, ensure you have the following dependencies installed:
 
-- Node.js
-- npm (Node Package Manager)
+- [Node.js](https://nodejs.org/)
+- [Firebase](https://firebase.google.com/)
 
 ## Installation
 
-1. Clone this repository to your local machine.
-2. Install the required dependencies by running the following command in the project directory:
+1. Clone the repository:
 
-```bash
-npm install
-```
+   ```bash
+   git clone https://github.com/KGH1113/subs_backend.git
+   ```
+
+2. Install the project dependencies:
+
+   ```bash
+   cd subs_backend
+   npm install
+   ```
 
 ## Configuration
 
-Make sure to replace the Firebase configuration with your own Firebase project credentials in the `index.js` file:
+1. Create a Firebase project and obtain your Firebase configuration.
 
-```javascript
-// Replace with your Firebase project credentials
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID",
-};
-```
+2. Replace the placeholder values in `firebaseConfig` within `README.md` with your actual Firebase configuration.
+
+3. Configure other settings as needed, such as the WebSocket path and port.
 
 ## Usage
 
@@ -43,195 +56,66 @@ To start the server, run the following command:
 npm start
 ```
 
-The server will be running on port 3000.
+Visit `http://localhost:3000` in your browser or use tools like Postman to interact with the API.
 
 ## Endpoints
 
-### 1. Song Request
-
-- URL: `POST /song-request`
-- Description: Allows users to request songs for broadcasting.
-- Request Body:
-
+- **POST /song-request:** Submit a song request.
 ```json
 {
-  "name": "Your Name",
-  "studentNumber": "Your Student Number",
-  "songTitle": "Song Title",
-  "singer": "Singer Name"
+  "name": "John Doe",
+  "studentNumber": "12345",
+  "songTitle": "Example Song",
+  "singer": "Example Singer"
+}
+```
+- **POST /suggestion-request:** Submit a suggestion.
+```json
+{
+  "name": "Jane Doe",
+  "studentNumber": "67890",
+  "suggestion": "Example Suggestion"
 }
 ```
 
-- Response:
+- **GET /view-suggestion:** View suggestions.
 
-  - Status 200: Success
+- **GET /view-schedule:** View schedules.
 
-  ```json
-  {
-    "status": "success",
-    "message": "Song request has been successfully submitted!"
-  }
-  ```
-
-  - Status 400: Error (e.g., invalid request, blacklisted user, etc.)
-
-  ```json
-  {
-    "status": "error",
-    "message": "Error message here"
-  }
-  ```
-
-### 2. View Song Requests for the Current Date
-
-- URL: `GET /view-request`
-- Description: Retrieves all the song requests for the current date.
-- Response:
-
-  - Status 200: Success
-
-  ```json
-  [
-    {
-      "name": "User 1",
-      "studentNumber": "123456",
-      "songTitle": "Song Title 1",
-      "singer": "Singer 1",
-      "time": "10:30:15"
-    },
-    {
-      "name": "User 2",
-      "studentNumber": "654321",
-      "songTitle": "Song Title 2",
-      "singer": "Singer 2",
-      "time": "11:45:22"
-    }
-  ]
-  ```
-
-  - Status 400: Error (e.g., data not found)
-
-  ```json
-  {
-    "status": "error",
-    "message": "No song requests found for the current date."
-  }
-  ```
-
-### 3. View All Song Requests
-
-- URL: `GET /view-all-requests`
-- Description: Retrieves all the song requests for all dates.
-- Response:
-
-  - Status 200: Success
-
-  ```json
-  {
-    "2023-08-01": {
-      "data": [
-        {
-          "name": "User 1",
-          "studentNumber": "123456",
-          "songTitle": "Song Title 1",
-          "singer": "Singer 1",
-          "time": "10:30:15"
-        }
-      ]
-    },
-    "2023-08-02": {
-      "data": [
-        {
-          "name": "User 2",
-          "studentNumber": "654321",
-          "songTitle": "Song Title 2",
-          "singer": "Singer 2",
-          "time": "11:45:22"
-        }
-      ]
-    }
-  }
-  ```
-
-  - Status 400: Error (e.g., data not found)
-
-  ```json
-  {
-    "status": "error",
-    "message": "No song requests found."
-  }
-  ```
-
-### 4. Suggest Request
-
-- URL: `POST /suggestion-request`
-- Description: Allows users to make suggestions for the broadcasting department.
-- Request Body:
-
+- **POST /add-schedule:** Add a new schedule.
 ```json
 {
-  "name": "Your Name",
-  "studentNumber": "Your Student Number",
-  "suggestion": "Your suggestion here"
+  "title": "Event Title",
+  "date": "2023-12-25",
+  "group": "Example Group",
+  "period": "Morning",
+  "link": "https://example.com"
 }
 ```
 
-- Response:
-
-  - Status 200: Success
-
-  ```json
-  {
-    "status": "success",
-    "message": "Suggestion has been successfully submitted!"
-  }
-  ```
-
-  - Status 400: Error (e.g., blacklisted user, etc.)
-
-  ```json
-  {
-    "status": "error",
-    "message": "Error message here"
-  }
-  ```
-
-### 4. Suggest Request
-
-- URL: `POST /add-story`
-- Description: Allows users to make story for the broadcasting department.
-- Request Body:
-
+- **POST /add-story:** Add a new story.
 ```json
 {
-  "name": "Your Name",
-  "studentNumber": "Your Student Number",
-  "story": "Your Story Here",
-  "songTitle": "Song for a story",
-  "singer": "Singer Name"
+  "name": "Alice",
+  "studentNumber": "54321",
+  "story": "Example Story",
+  "songTitle": "Favorite Song",
+  "singer": "Favorite Singer"
 }
 ```
 
-- Response:
+- **GET /view-story:** View submitted stories.
 
-  - Status 200: Success
+## WebSocket
 
-  ```json
-  {
-    "status": "success",
-    "message": "Story has been successfully submitted!"
-  }
-  ```
+A WebSocket server is running at `ws://localhost:3000/view-requests`. It broadcasts song request updates to connected clients.
 
-  - Status 400: Error (e.g., blacklisted user, etc.)
+Feel free to modify these samples according to your needs and use them for testing the respective API endpoints.
 
-  ```json
-  {
-    "status": "error",
-    "message": "Error message here"
-  }
-  ```
+## Contributing
+
+Contributions are welcome! Please follow the [Contributing Guidelines](CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE).

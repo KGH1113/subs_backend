@@ -3,325 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SeounBSS backend</title>
+    <title>SUBS backend</title>
     <style>
-      /* Apply some basic styling to the body */
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      :root {
+        --text-color: #000;
+        --background-color: #bababa;
+        --button-background-color: #ffffff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --text-color: #bababa;
+          --background-color: #000;
+          --button-background-color: #2c2c2c;
+        }
+      }
+
       body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 30px;
+        background-color: var(--background-color);
       }
 
-      /* Style the article container */
-      .article {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      /* Style the headings */
-      h1,
-      h2,
-      h3 {
-        color: #333;
+      .container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 4rem;
       }
 
       h1 {
-        font-size: 50px;
+        color: var(--text-color);
+        font-size: 4rem;
+        font-weight: 800;
       }
 
-      /* Style paragraphs */
-      p {
-        line-height: 1.6;
-      }
-
-      /* Style code blocks */
-      pre {
-        background-color: #f4f4f4;
-        padding: 10px;
-        border: 1px solid #ddd;
-        overflow: auto;
-        font-size: 14px;
-        line-height: 1.6;
-      }
-
-      /* Style code lines */
-      pre code {
-        display: block;
-        white-space: pre;
-      }
-
-      /* Style lists */
-      ul,
-      ol {
-        padding-left: 20px;
-      }
-
-      /* Style list items */
-      li {
-        line-height: 1.6;
-      }
-
-      /* Style links */
       a {
-        color: #007bff;
-        text-decoration: none;
+        color: var(--text-color);
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: 400;
       }
 
-      /* Style blockquotes */
-      blockquote {
-        border-left: 4px solid #ccc;
-        margin: 10px 0;
-        padding-left: 10px;
-        color: #777;
-      }
-
-      /* Style horizontal rules */
-      hr {
+      button {
+        background-color: var(--button-background-color);
+        color: var(--text-color);
         border: none;
-        border-top: 1px solid #ddd;
-        margin: 20px 0;
-      }
-
-      /* Responsive styling for smaller screens */
-      @media screen and (max-width: 600px) {
-        .article {
-          padding: 10px;
-        }
+        width: 30rem;
+        padding: 1rem 2rem;
+        border-radius: 1rem;
       }
     </style>
   </head>
   <body>
-    <article class="markdown-body">
-      <h1>Song Request and Suggestion System API</h1>
-      <p>
-        This repository contains the source code for a simple Song Request and
-        Suggestion System API built using Node.js and Firebase. The API allows
-        users to request songs and make suggestions for a broadcasting
-        department.
-      </p>
-      <h2>Prerequisites</h2>
-      <p>
-        Before running the API, ensure you have the following installed on your
-        machine:
-      </p>
-      <ul>
-        <li>Node.js</li>
-        <li>npm (Node Package Manager)</li>
-      </ul>
-      <h2>Installation</h2>
-      <ol>
-        <li>Clone this repository to your local machine.</li>
-        <li>
-          Install the required dependencies by running the following command in
-          the project directory:
-        </li>
-      </ol>
-      <div>
-        <pre>npm install</pre>
-      </div>
-      <h2>Configuration</h2>
-      <p>
-        Make sure to replace the Firebase configuration with your own Firebase
-        project credentials in the <code>index.js</code> file:
-      </p>
-      <div>
-        <pre><span class="pl-c">// Replace with your Firebase project credentials</span>
-    <span class="pl-k">const</span> <span class="pl-s1">firebaseConfig</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
-      <span class="pl-c1">apiKey</span>: <span class="pl-s">"YOUR_API_KEY"</span><span class="pl-kos">,</span>
-      <span class="pl-c1">authDomain</span>: <span class="pl-s">"YOUR_AUTH_DOMAIN"</span><span class="pl-kos">,</span>
-      <span class="pl-c1">projectId</span>: <span class="pl-s">"YOUR_PROJECT_ID"</span><span class="pl-kos">,</span>
-      <span class="pl-c1">storageBucket</span>: <span class="pl-s">"YOUR_STORAGE_BUCKET"</span><span class="pl-kos">,</span>
-      <span class="pl-c1">messagingSenderId</span>: <span class="pl-s">"YOUR_MESSAGING_SENDER_ID"</span><span class="pl-kos">,</span>
-      <span class="pl-c1">appId</span>: <span class="pl-s">"YOUR_APP_ID"</span><span class="pl-kos">,</span>
-      <span class="pl-c1">measurementId</span>: <span class="pl-s">"YOUR_MEASUREMENT_ID"</span><span class="pl-kos">,</span>
-    <span class="pl-kos">}</span><span class="pl-kos">;</span></pre>
-      </div>
-      <p>The server will be running on port 3000.</p>
-      <h2>Endpoints</h2>
-      <h3>1. Song Request</h3>
-      <ul>
-        <li>URL: <code>POST /song-request</code></li>
-        <li>Description: Allows users to request songs for broadcasting.</li>
-        <li>Request Body:</li>
-      </ul>
-      <div>
-        <pre>{
-      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Name<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Student Number<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer Name<span class="pl-pds">"</span></span>
-    }</pre>
-      </div>
-      <ul>
-        <li>
-          <p>Response:</p>
-          <ul>
-            <li>Status 200: Success</li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>success<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song request has been successfully submitted!<span class="pl-pds">"</span></span>
-    }</pre>
-          </div>
-          <ul>
-            <li>
-              Status 400: Error (e.g., invalid request, blacklisted user, etc.)
-            </li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Error message here<span class="pl-pds">"</span></span>
-    }</pre>
-          </div>
-        </li>
-      </ul>
-      <h3>2. View Song Requests for the Current Date</h3>
-      <ul>
-        <li>
-          <p>URL: <code>GET /view-request</code></p>
-        </li>
-        <li>
-          <p>
-            Description: Retrieves all the song requests for the current date.
-          </p>
-        </li>
-        <li>
-          <p>Response:</p>
-          <ul>
-            <li>Status 200: Success</li>
-          </ul>
-          <div>
-            <pre>[
-      {
-        <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 1<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>123456<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 1<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 1<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>10:30:15<span class="pl-pds">"</span></span>
-      },
-      {
-        <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 2<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>654321<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 2<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 2<span class="pl-pds">"</span></span>,
-        <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>11:45:22<span class="pl-pds">"</span></span>
-      }
-    ]</pre>
-          </div>
-          <ul>
-            <li>Status 400: Error (e.g., data not found)</li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>No song requests found for the current date.<span class="pl-pds">"</span></span>
-    }</pre>
-          </div>
-        </li>
-      </ul>
-      <h3>3. View All Song Requests</h3>
-      <ul>
-        <li>
-          <p>URL: <code>GET /view-all-requests</code></p>
-        </li>
-        <li>
-          <p>Description: Retrieves all the song requests for all dates.</p>
-        </li>
-        <li>
-          <p>Response:</p>
-          <ul>
-            <li>Status 200: Success</li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"2023-08-01"</span>: {
-        <span class="pl-ent">"data"</span>: [
-          {
-            <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 1<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>123456<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 1<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 1<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>10:30:15<span class="pl-pds">"</span></span>
-          }
-        ]
-      },
-      <span class="pl-ent">"2023-08-02"</span>: {
-        <span class="pl-ent">"data"</span>: [
-          {
-            <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>User 2<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>654321<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"songTitle"</span>: <span class="pl-s"><span class="pl-pds">"</span>Song Title 2<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"singer"</span>: <span class="pl-s"><span class="pl-pds">"</span>Singer 2<span class="pl-pds">"</span></span>,
-            <span class="pl-ent">"time"</span>: <span class="pl-s"><span class="pl-pds">"</span>11:45:22<span class="pl-pds">"</span></span>
-          }
-        ]
-      }
-    }</pre>
-          </div>
-          <ul>
-            <li>Status 400: Error (e.g., data not found)</li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>No song requests found.<span class="pl-pds">"</span></span>
-    }</pre>
-          </div>
-        </li>
-      </ul>
-      <h3>4. Suggest Request</h3>
-      <ul>
-        <li>URL: <code>POST /suggestion-request</code></li>
-        <li>
-          Description: Allows users to make suggestions for the broadcasting
-          department.
-        </li>
-        <li>Request Body:</li>
-      </ul>
-      <div>
-        <pre>{
-      <span class="pl-ent">"name"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Name<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"studentNumber"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your Student Number<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"suggestion"</span>: <span class="pl-s"><span class="pl-pds">"</span>Your suggestion here<span class="pl-pds">"</span></span>
-    }</pre>
-      </div>
-      <ul>
-        <li>
-          <p>Response:</p>
-          <ul>
-            <li>Status 200: Success</li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>success<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Suggestion has been successfully submitted!<span class="pl-pds">"</span></span>
-    }</pre>
-          </div>
-          <ul>
-            <li>Status 400: Error (e.g., blacklisted user, etc.)</li>
-          </ul>
-          <div>
-            <pre>{
-      <span class="pl-ent">"status"</span>: <span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>,
-      <span class="pl-ent">"message"</span>: <span class="pl-s"><span class="pl-pds">"</span>Error message here<span class="pl-pds">"</span></span>
-    }</pre>
-          </div>
-        </li>
-      </ul>
-      <h2>Contributing</h2>
-      <p>
-        If you want to contribute to this project, feel free to fork the
-        repository and submit a pull request.
-      </p>
-      <h2>License</h2>
-      <p>
-        This project is licensed under the MIT License - see the
-        <a href="/KGH1113/seounbss_backend/blob/master/LICENSE">LICENSE</a> file
-        for details.
-      </p>
-    </article>
+    <div class="container">
+      <h1>You are in the main page</h1>
+      <button>
+        <a href="https://github.com/SeounBroadCast/subs_backend/blob/master/README.md">Go to github README.md</a>
+      </button>
+    </div>
   </body>
 </html>
